@@ -1,0 +1,276 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<p></p>
+<div class="col-xs-12">
+    <div class="panel panel-primary">
+        <!--INICIO HEADER PANEL-->
+        <div class="panel-heading text-center">
+            <h4>School Manager</h4>
+        </div>
+        <!--FIN HEADER PANEL-->
+        <!--INICIO BODY PANEL-->
+        <div class="panel-body">
+
+            <div class="col-xs-6">
+                <div class="form-group row">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+
+                            <div class="form-group row">
+                                <div class="col-xs-3">
+                                    <label id="lblId" class="label label-primary">ID</label>
+                                </div>
+
+                                <div class="col-xs-9">
+                                    <input id="txtId" placeholder="ID" class="form-control" maxlength="3" type="number"/>
+                                </div>
+
+
+                            </div>
+
+                            <div class="form-group row">
+
+                                <div class="col-xs-3">
+                                    <label id="lblName" class="label label-primary">Name</label>
+                                </div>
+                                <div class="col-xs-9">
+                                    <input id="txtName" placeholder="Name" class="form-control" maxlength="100"/>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group row">
+
+                                <div class="col-xs-3">
+                                    <label id="lblAddress" class="label label-primary">Address</label>
+                                </div>
+
+
+                                <div class="col-xs-9">
+                                    <input id="txtAddress" placeholder="Address" class="form-control" maxlength="100" />
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="form-group row">
+                                <div class="col-xs-4">
+                                    <button id="btnSave" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <button id="btnModify" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i> Modify</button>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <button id="btnDelete" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                      
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+
+                        <div class="form-group row">
+                            <div class="col-xs-4">
+                                <label id="lblId" class="label label-primary">ID</label>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <label id="lblName" class="label label-primary">Name</label>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <label id="lblAddress" class="label label-primary">Address</label>
+                            </div>
+                            <hr />
+
+
+                            @foreach (var item in ViewBag.list)
+                            {
+                                <div class="col-xs-4">
+                                    <label id="@item.esc_id">@item.esc_id</label>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <label id="@item.esc_name">@item.esc_name</label>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <label id="@item.esc_address">@item.esc_address</label>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div><!--FIN BODY PANEL-->
+    </div><!--Panel-->
+</div><!--fin col-xs-12-->
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<!-- ============================================================ COLOQUE ABAJO SU SCRIPT ============================================================-->
+<!-- ============================================================ COLOQUE ABAJO SU SCRIPT ============================================================-->
+<!-- ============================================================ COLOQUE ABAJO SU SCRIPT ============================================================-->
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSave").click(function () {
+            saveData();
+        });
+
+        $("#btnModify").click(function () {
+            modifyData();
+        });
+
+        $("#btnDelete").click(function () {
+            deleteData();
+        });
+
+    });
+
+    function saveData() {
+        var baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+        var txtId = $("#txtId").val();
+        var txtName = $("#txtName").val();
+        var txtAddress = $("#txtAddress").val();
+        console.log(txtId);
+        //Inicio ajax
+        $.ajax(
+        {
+            url: baseUrl + '/Home/SaveData',
+            method: 'POST',
+            data:
+            {
+                id: txtId,
+                name: txtName,
+                address: txtAddress
+            },
+            dataType: 'json',
+            //antes de terminar de cargar los datos (loading..)
+            beforeSend: function () {
+
+            },
+            //cuando los datos han sido cargados exitosamente
+            success: function (data) {
+                //Los datos otenidos están representados como data.
+                //En caso de ser un List, debemos invoca los datos como
+                //data.NombreColumna
+                //cuando ocurre un error
+
+                if (data.estado) {
+                    alert("Success");
+                    location.reload();
+                } else {
+                    alert("Error");
+                    location.reload();
+                }
+
+            }, error: function (error) {
+                console.log(error);
+                ShowAlert("Ha ourrido un error!", "Contacte con el administrador", "red");
+            }
+        }
+        );
+        //Fin ajax
+    }
+
+
+    function modifyData() {
+        var baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+        var txtId = $("#txtId").val();
+        var txtName = $("#txtName").val();
+        var txtAddress = $("#txtAddress").val();
+        //Inicio ajax
+        $.ajax(
+        {
+            url: baseUrl + '/Home/ModifyData',
+            method: 'POST',
+            data:
+            {
+                id: txtId,
+                name: txtName,
+                address: txtAddress
+            },
+            dataType: 'json',
+            //antes de terminar de cargar los datos (loading..)
+            beforeSend: function () {
+
+            },
+            //cuando los datos han sido cargados exitosamente
+            success: function (data) {
+                if (data.estado) {
+                    alert("Success");
+                    location.reload();
+                } else {
+                    alert("Error");
+                    location.reload();
+                }
+
+            }, error: function (error) {
+                console.log(error);
+                ShowAlert("Ha ourrido un error!", "Contacte con el administrador", "red");
+            }
+        }
+        );
+        //Fin ajax
+    }
+
+
+    function deleteData() {
+        var baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+        var txtId = $("#txtId").val();
+        //Inicio ajax
+        $.ajax(
+        {
+            url: baseUrl + '/Home/DeleteData',
+            method: 'POST',
+            data:
+            {
+                id: txtId
+            },
+            dataType: 'json',
+            //antes de terminar de cargar los datos (loading..)
+            beforeSend: function () {
+
+            },
+            //cuando los datos han sido cargados exitosamente
+            success: function (data) {
+                if (data.estado) {
+                    alert("Success");
+                    location.reload();
+                } else {
+                    alert("Error");
+                    location.reload();
+                }
+
+            }, error: function (error) {
+                console.log(error);
+                ShowAlert("Ha ourrido un error!", "Contacte con el administrador", "red");
+            }
+        }
+        );
+        //Fin ajax
+    }
+
+</script>
